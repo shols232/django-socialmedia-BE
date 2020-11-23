@@ -177,7 +177,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-ALLOWED_HOSTS=['localhost', 'localhost:4200', '127.0.0.1', 'shols232.github.io', 'vhoid-be.herokupp.com']
+ALLOWED_HOSTS=['localhost', 'localhost:4200', '127.0.0.1', 'shols232.github.io', 'vhoid-be.herokuapp.com']
 
 CORS_ALLOW_HEADERS = default_headers + (
     'Access-Control-Allow-Origin',
