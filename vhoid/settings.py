@@ -182,10 +182,14 @@ ALLOWED_HOSTS=['localhost', 'localhost:4200', '127.0.0.1', 'shols232.github.io']
 CORS_ALLOW_HEADERS = default_headers + (
     'Access-Control-Allow-Origin',
 )
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'shols232.github.io'
-]
+
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:4200',
+#     'https://shols232.github.io',
+#     '*'
+# ]
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
