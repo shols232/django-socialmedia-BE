@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     #third party apps
     'rest_framework.authtoken',
     'corsheaders',
-    'channels'
+    'channels',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,7 @@ if DEBUG:
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": [config('REDIS_URL')],
+                "hosts": [('127.0.0.1', '6379')],
             },
         },
     }
@@ -123,10 +124,11 @@ else:
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": [('127.0.0.1', '6379')],
+                "hosts": [config('REDIS_URL')],
             },
         },
     }
+    
 
 
 
@@ -195,3 +197,10 @@ CORS_ALLOW_CREDENTIALS = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL='/media/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STROAGE = 'storages.backends.s3boto3.S3Boto3Storage'
