@@ -64,7 +64,11 @@ class UserProfile(ListCreateAPIView):
         if serializer.is_valid(raise_exception=True):
             obj = serializer.save()
             print(obj)
-            return Response({'message':'Profile updated succesfully!'})
+            resp = {
+                'message':'Profile updated succesfully!',
+                'image_url':obj.image.url
+            }
+            return Response(resp)
 
 @api_view(['POST', ])
 @authentication_classes([TokenAuthentication, ])
