@@ -27,9 +27,10 @@ class Post(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = PostCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(author=request.user)
+            post = serializer.save(author=request.user)
+            post_json = PostListSerializer(post, context={'request': request}).data
             data = {'message':'post succesfully created'}
-            return Response(data=serializer.data, status=200)
+            return Response(data=post_json, status=200)
 
         return Response({'message':'Ooops!! Something went wrong...'}, status=400)
 

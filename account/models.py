@@ -35,7 +35,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    def save(self):
+    def save(self, *args, **kwargs):
         # Opening the uploaded image
         im = Image.open(self.image)
 
@@ -52,7 +52,7 @@ class Profile(models.Model):
         self.image = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image.name.split('.')[0], 'image/jpeg',
                                         sys.getsizeof(output), None)
 
-        super(Profile, self).save()
+        super(Profile, self).save(*args, **kwargs)
 
 
 
