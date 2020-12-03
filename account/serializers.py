@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile, UserFollowing
+from .models import Profile, UserFollowing, UserSettings
 from posts.models import Content
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -74,6 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user.profile.image.url
 
     def get_bio(self, user):
+        print(user.profile.bio, user)
         return user.profile.bio
 
 
@@ -94,4 +95,10 @@ class UserFollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFollowing
         fields = ['user']
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserSettings
+        exclude = ['user']
 

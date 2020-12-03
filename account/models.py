@@ -54,6 +54,11 @@ class Profile(models.Model):
 
         super(Profile, self).save(*args, **kwargs)
 
+class UserSettings(models.Model):
+    user = models.ForeignKey(User, related_name="settings", on_delete=models.CASCADE)
+    enable_follow_me = models.BooleanField(default=True)
+    enable_message_me = models.BooleanField(default=True)
+    enable_tagging = models.BooleanField(default=True)
 
 
 class UserFollowing(models.Model):
@@ -78,6 +83,11 @@ def create_profile(sender, instance, created, **kwargs):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def create_settings(sender, instance, created, **kwargs):
+    if created:
+        UserSettings.objects.create(user=instance)
 
 
 # class Hashtag(models.Model):

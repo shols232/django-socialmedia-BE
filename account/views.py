@@ -1,13 +1,15 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from .serializers import CreateUserSerializer, UserSerializer, ProfileSerializer, UserFollowingSerializer
+from .serializers import (CreateUserSerializer, UserSerializer, 
+ProfileSerializer, UserFollowingSerializer, UserSettingsSerializer)
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from .models import Profile, UserFollowing
+from .models import Profile, UserFollowing, UserSettings
 from rest_framework.parsers import FileUploadParser
 from django.contrib.auth.models import User
+from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
@@ -79,6 +81,11 @@ def follow_action(request):
     username = data.get('username')
     action = data.get('action')
     user = User.objects.get(username=username)
+    print(user.settings)
+    user_setting = UserSettings.objects.get(user=user)
+    if user_setting.enable_follow_me == False and action != 'unfollow':
+        return Response({'status':'ACTION_CANNOT_BE_PERFORMED'})
+    
     follows = user.followers.filter(following_user_id=following_user).exists()
 
     if action == 'follow':
@@ -102,3 +109,26 @@ class UserFollowings(ListAPIView):
         followers = user.followers.all()
         serializer = UserFollowingSerializer(followers, context={'request':request}, many=True)
         return Response(serializer.data, status=200)
+
+
+class UpdateUserSettings(CreateAPIView):
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request, *args, **kwargs):
+        setting, created = UserSettings.objects.get_or_create(user=request.user)
+        serializer = UserSettingsSerializer(setting, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'status':True, 'message':'settings succesfully updated!'}, status=status.HTTP_200_OK)
+
+
+class UserSettingsDetails(ListAPIView):
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        setting, created = UserSettings.objects.get_or_create(user=request.user)
+        serializer = UserSettingsSerializer(setting)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        

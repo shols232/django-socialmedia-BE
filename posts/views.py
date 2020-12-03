@@ -72,18 +72,21 @@ def post_react(request):
         post = Content.objects.get(id=post_id)
         exists = post.likes.filter(username=user.username).exists()
 
-        if exists:
-            if action == 'unlike':
-                if react == 'like':
+        
+        if react == 'like':
+            exists = post.likes.filter(username=user.username).exists()
+            if exists:
+                if action == 'unlike':
                     post.likes.remove(user)
-                elif react == 'love':
-                    post.loves.remove(user)
+            elif action == 'like':
+                post.likes.add(user)
         else:
-            if action == 'like':
-                if react == 'like':
-                    post.likes.add(user)
-                elif react == 'love':
-                    post.loves.add(user)
+            exists = post.likes.filter(username=user.username).exists()
+            if exists:
+                if action == 'unlike':
+                    post.likes.remove(user)
+            elif action == 'like':
+                post.loves.add(user)
         return Response({'success':True}, status=200)
     return Response({'success':False}, status=400)
 
