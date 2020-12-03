@@ -26,7 +26,6 @@ class UserChats(ListCreateAPIView):
         total_chats = chats | chats_2
         total_chats = total_chats.order_by('-updated')
         serializer = ChatSerializer(total_chats, many=True, context={'request':request})
-        print(serializer.data, total_chats)
         return Response(serializer.data, status=200)
 
 

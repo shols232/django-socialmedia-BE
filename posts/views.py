@@ -70,7 +70,7 @@ def post_react(request):
         react = data['react']
         user = request.user
         post = Content.objects.get(id=post_id)
-        exists = post.likes.filter(username=user.username).exists()
+        # exists = post.likes.filter(username=user.username).exists()
 
         
         if react == 'like':
@@ -81,7 +81,7 @@ def post_react(request):
             elif action == 'like':
                 post.likes.add(user)
         else:
-            exists = post.likes.filter(username=user.username).exists()
+            exists = post.loves.filter(username=user.username).exists()
             if exists:
                 if action == 'unlike':
                     post.likes.remove(user)

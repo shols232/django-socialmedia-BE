@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Chat, Messages, Contact
 from account.serializers import UserSerializer
+from account.models import UserSettings
 from django.contrib.auth.models import User
 
 class MessagesSerializer(serializers.ModelSerializer):
@@ -64,11 +65,16 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         try:
             chat = Chat.objects.get(user_one=req_contact, user_two=contact)
         except:
-            try:
-                chat = Chat.objects.get(user_one=contact, user_two=req_contact)
-            except:
-                chat = Chat.objects.create(user_one=req_contact, user_two=contact)
-
+            setting, created = UserSettings.objects.get_or_create(user=user)
+            follows = req_user.followers.filter(following_user_id=user_id).exists()
+            if not setting.enable_message_me and not follows:
+                return {'status':'ACTION_CANNOT_BE_PERFORMED'}
+            else:
+                try:
+                    chat = Chat.objects.get(user_one=contact, user_two=req_contact)
+                except:
+                    chat = Chat.objects.create(user_one=req_contact, user_two=contact)
+                
         return ChatSerializer(chat, context={'user':req_user}).data
 
 
