@@ -25,6 +25,7 @@ class Post(generics.ListCreateAPIView):
         return Response(data=serializer.data, status=200)
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = PostCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             post = serializer.save(author=request.user)

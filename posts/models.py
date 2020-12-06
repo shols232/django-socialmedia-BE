@@ -28,21 +28,22 @@ class Content(models.Model):
         return self.content[:10]
 
     def save(self, *args, **kwargs):
-        # Opening the uploaded image
-        im = Image.open(self.image_content)
+        if self.image_content:
+            # Opening the uploaded image
+            im = Image.open(self.image_content)
 
-        output = BytesIO()
+            output = BytesIO()
 
-        # Resize/modify the image
-        im = im.resize((300, 300))
+            # Resize/modify the image
+            im = im.resize((300, 300))
 
-        # after modifications, save it to the output
-        im.save(output, format='PNG', quality=90)
-        output.seek(0)
+            # after modifications, save it to the output
+            im.save(output, format='PNG', quality=90)
+            output.seek(0)
 
-        # change the imagefield value to be the newley modifed image value
-        self.image_content = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image_content.name.split('.')[0], 'image/png',
-                                        sys.getsizeof(output), None)
+            # change the imagefield value to be the newley modifed image value
+            self.image_content = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image_content.name.split('.')[0], 'image/png',
+                                            sys.getsizeof(output), None)
 
         super(Content, self).save(*args, **kwargs)
 

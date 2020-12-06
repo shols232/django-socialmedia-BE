@@ -24,6 +24,7 @@ class PostListSerializer(serializers.ModelSerializer):
     likes_post = serializers.SerializerMethodField()
     loves_post = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
+    username = serializers.CharField(read_only=True, source='author.username')
     author_pic = serializers.CharField(read_only=True, source='author.profile.image.url')
     country = serializers.CharField(read_only=True, source='author.profile.country')
     state = serializers.CharField(read_only=True, source='author.profile.state')

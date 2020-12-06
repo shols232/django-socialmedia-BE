@@ -66,7 +66,7 @@ class ChatCreateSerializer(serializers.ModelSerializer):
             chat = Chat.objects.get(user_one=req_contact, user_two=contact)
         except:
             setting, created = UserSettings.objects.get_or_create(user=user)
-            follows = req_user.followers.filter(following_user_id=user_id).exists()
+            follows = req_user.followers.filter(following_user_id=user).exists()
             if not setting.enable_message_me and not follows:
                 return {'status':'ACTION_CANNOT_BE_PERFORMED'}
             else:

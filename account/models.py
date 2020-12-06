@@ -20,7 +20,7 @@ from django.urls import reverse
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.CharField(max_length=350, default='')
-    image = models.ImageField(default='default/default.png', upload_to='profile')
+    image = models.ImageField(default='default/default.jpg', upload_to='profile')
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=400, blank=True, null=True, default='')
     country = models.CharField(max_length=200,blank=True, null=True, default='Afghanistan')
