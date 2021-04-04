@@ -19,8 +19,8 @@ from django.urls import reverse
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=350, default='')
-    image = models.ImageField(default='default/default.jpg', upload_to='profile')
+    bio = models.CharField(max_length=350, default='', blank=True, null=True)
+    image = models.ImageField(default='default/def.png', upload_to='profile')
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=400, blank=True, null=True, default='')
     country = models.CharField(max_length=200,blank=True, null=True, default='Afghanistan')
@@ -35,24 +35,24 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    def save(self, *args, **kwargs):
-        # Opening the uploaded image
-        im = Image.open(self.image)
+    # def save(self, *args, **kwargs):
+    #     # Opening the uploaded image
+    #     im = Image.open(self.image)
 
-        output = BytesIO()
+    #     output = BytesIO()
 
-        # Resize/modify the image
-        im = im.resize((200, 200))
+    #     # Resize/modify the image
+    #     im = im.resize((200, 200))
 
-        # after modifications, save it to the output
-        im.save(output, format='PNG', quality=90)
-        output.seek(0)
+    #     # after modifications, save it to the output
+    #     im.save(output, format='PNG', quality=90)
+    #     output.seek(0)
 
-        # change the imagefield value to be the newley modifed image value
-        self.image = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image.name.split('.')[0], 'image/jpeg',
-                                        sys.getsizeof(output), None)
+    #     # change the imagefield value to be the newley modifed image value
+    #     self.image = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image.name.split('.')[0], 'image/png',
+    #                                     sys.getsizeof(output), None)
 
-        super(Profile, self).save(*args, **kwargs)
+    #     super(Profile, self).save(*args, **kwargs)
 
 class UserSettings(models.Model):
     user = models.ForeignKey(User, related_name="settings", on_delete=models.CASCADE)
@@ -75,14 +75,15 @@ class UserFollowing(models.Model):
 
 
 @receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-        
-@receiver(post_save, sender=User)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        profile = Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def create_settings(sender, instance, created, **kwargs):
