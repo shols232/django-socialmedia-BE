@@ -35,24 +35,24 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    # def save(self, *args, **kwargs):
-    #     # Opening the uploaded image
-    #     im = Image.open(self.image)
+    def save(self, *args, **kwargs):
+        # Opening the uploaded image
+        im = Image.open(self.image)
 
-    #     output = BytesIO()
+        output = BytesIO()
 
-    #     # Resize/modify the image
-    #     im = im.resize((200, 200))
+        # Resize/modify the image
+        im = im.resize((200, 200))
 
-    #     # after modifications, save it to the output
-    #     im.save(output, format='PNG', quality=90)
-    #     output.seek(0)
+        # after modifications, save it to the output
+        im.save(output, format='PNG', quality=90)
+        output.seek(0)
 
-    #     # change the imagefield value to be the newley modifed image value
-    #     self.image = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image.name.split('.')[0], 'image/png',
-    #                                     sys.getsizeof(output), None)
+        # change the imagefield value to be the newley modifed image value
+        self.image = InMemoryUploadedFile(output, 'ImageField', "%s.png" % self.image.name.split('.')[0], 'image/png',
+                                        sys.getsizeof(output), None)
 
-    #     super(Profile, self).save(*args, **kwargs)
+        super(Profile, self).save(*args, **kwargs)
 
 class UserSettings(models.Model):
     user = models.ForeignKey(User, related_name="settings", on_delete=models.CASCADE)
